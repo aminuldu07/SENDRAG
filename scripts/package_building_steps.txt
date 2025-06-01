@@ -22,8 +22,19 @@ pip install transformers==4.49.0
 pip install accelerate==1.6.0
 
 18. poetry run uvicorn api.server:app --reload (in terminal)
-19. 
 
+## at mac##
+
+brew install poetry ( from global directory)
+# check the package structur by """ tree -L 2" from sendrag directory 
+  ---------- tree -L 2"
+  ----------- head -n 10 ui/app.py
+
+# at Sendrag directory 
+    --- poetry install 
+    --- poetry env info --path (Check where the Poetry-managed environment lives: )
+    ---  source /Users/amin/Library/Caches/pypoetry/virtualenvs/sendrag-s8hi-jRC-py3.13/bin/activate (activate poetry virtualenvs)
+    --- which python ( python directory for the virtualenvs)
 
 
 
