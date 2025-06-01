@@ -22,6 +22,8 @@ pip install transformers==4.49.0
 pip install accelerate==1.6.0
 
 18. poetry run uvicorn api.server:app --reload (in terminal)
+------------ streamlit run ui/app.py
+
 
 ## at mac##
 
@@ -35,6 +37,36 @@ brew install poetry ( from global directory)
     --- poetry env info --path (Check where the Poetry-managed environment lives: )
     ---  source /Users/amin/Library/Caches/pypoetry/virtualenvs/sendrag-s8hi-jRC-py3.13/bin/activate (activate poetry virtualenvs)
     --- which python ( python directory for the virtualenvs)
+  
+  
+ #AWS--------------------------------------------------------------
+    -- A1K2IAZVDON25TE3D3VINB14
 
+SENDRAG/
+│
+├── sendrag/              # Core logic
+│   ├── __init__.py
+│   └── app.py            # Core functions/classes
+│
+├── api/                  # REST API (FastAPI or Flask)
+│   └── server.py
+│
+├── ui/                   # Frontend (Streamlit, Gradio, etc.)
+│   └── app.py
+│
+├── scripts/              # Dev and deployment scripts
+│   └── build.py
+│
+├── data/                 # Static resources (can move to S3 in production)
+│
+├── models/               # faiss_index.idx, documents.pkl (modularize)
+│
+├── tests/                # Unit & integration tests
+│   └── test_app.py
+│
+├── pyproject.toml        # Poetry-managed dependencies
+├── run_app.py            # Entrypoint script
+├── Dockerfile            # For containerizing the app
+└── README.md
 
 

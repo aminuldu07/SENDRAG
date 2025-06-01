@@ -1,0 +1,34 @@
+# Byte-compiled / cache files
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+.venv/
+env/
+venv/
+
+# Env files
+.env
+*.env
+
+# macOS files
+.DS_Store
+
+# Logs and outputs
+logs/
+*.log
+
+# VS Code
+.vscode/
+
+# Models / Index files
+*.pkl
+*.idx
+
+# Poetry files
+poetry.lock
+
+# Jupyter Notebook checkpoints (if applicable)
+.ipynb_checkpoints/
+
