@@ -1,19 +1,22 @@
 # server.py
-
+#from sendrag.config import Config
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from sendrag.sendrag_app import VectorStore, get_embedding, generate_response
-
 import faiss
 import pickle
 import numpy as np
+
+
+#print(Config.DEBUG)
+#print(Config.OPENAI_API_KEY)
 
 app = FastAPI()
 
 # ---- Load vector store ----
 EMBEDDING_DIM = 384  # for MiniLM model
-FAISS_INDEX_PATH = "faiss_index.idx"
-DOCUMENTS_PATH = "documents.pkl"
+FAISS_INDEX_PATH = "models/faiss_index.idx"
+DOCUMENTS_PATH = "models/documents.pkl"
 
 # Load FAISS index and corresponding documents
 index = faiss.read_index(FAISS_INDEX_PATH)

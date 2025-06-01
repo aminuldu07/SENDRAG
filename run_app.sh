@@ -5,8 +5,8 @@ source /Users/amin/Library/Caches/pypoetry/virtualenvs/sendrag-s8hi-jRC-py3.13/b
 
 # Start backend in background
 echo "Starting backend..."
-uvicorn api.server:app --host 0.0.0.0 --port 8000 --reload &
-
+#uvicorn api.server:app --host 0.0.0.0 --port 8000 --reload &
+poetry run uvicorn api.server:app --host 0.0.0.0 --port 8000 --reload &
 BACKEND_PID=$!
 
 trap "echo 'Stopping backend...'; kill $BACKEND_PID; exit" SIGINT SIGTERM
@@ -31,7 +31,7 @@ fi
 
 # Start frontend (Streamlit)
 echo "Starting frontend..."
-streamlit run ui/app.py
+poetry run streamlit run ui/app.py
 
 # When frontend exits, kill backend
 echo "Stopping backend..."

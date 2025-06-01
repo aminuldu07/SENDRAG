@@ -1,4 +1,9 @@
 # # app.py
+#from sendrag.config import Config
+
+#print(Config.DEBUG)
+#print(Config.OPENAI_API_KEY)
+
 import streamlit as st
 import requests
 

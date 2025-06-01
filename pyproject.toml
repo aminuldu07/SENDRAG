@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "\"A package for semantic retrieval and generative AI chat from SEND related documents\""
 authors = ["Md Aminul Islam Prodhan <aminuldu07@gmail.com>"]
 license = "MIT"
+packages = [{ include = "sendrag" }]
 readme = "README.md"
 
 [tool.poetry.dependencies]
@@ -23,6 +24,7 @@ numpy = "^2.2.4"
 scikit-learn = "^1.6.1"
 pymupdf = "^1.26.0"
 pycryptodome = "^3.23.0"
+python-dotenv = "^1.1.0"
 
 
 [tool.poetry.group.dev.dependencies]
