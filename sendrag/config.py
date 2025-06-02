@@ -13,8 +13,7 @@
 #     VECTOR_INDEX_PATH = os.getenv("VECTOR_INDEX_PATH", "models/faiss_index.idx")
 #     DOCUMENTS_PATH = os.getenv("DOCUMENTS_PATH", "models/documents.pkl")
 
-#     # API Keys
-#     OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+
 
 # sendrag/config.py
 from dotenv import load_dotenv
@@ -26,3 +25,5 @@ DEBUG = os.getenv("DEBUG", "False").lower() in ("true", "1", "yes")
 
 LLAMA_MODEL_NAME = os.getenv("LLAMA_MODEL_NAME", "llama3.2")
 EMBEDDER_MODEL_NAME = os.getenv("EMBEDDER_MODEL_NAME", "all-MiniLM-L6-v2")
+BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
+#print("BACKEND_URL =", BACKEND_URL)

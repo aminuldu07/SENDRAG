@@ -6,6 +6,7 @@
 
 import streamlit as st
 import requests
+from sendrag.config import BACKEND_URL  # or wherever your config is
 
 st.set_page_config(page_title="SEND-RAG Assistant", layout="centered")
 st.title("🧠 SEND-RAG - A SEND Document Assistant")
@@ -17,7 +18,8 @@ query = st.text_input("🔍 Enter your question:", placeholder="e.g., What is th
 if st.button("Search") and query.strip():
     with st.spinner("Searching through SEND documents..."):
         try:
-            response = requests.post("http://localhost:8000/query", json={"query": query})
+            #response = requests.post("http://localhost:8000/query", json={"query": query})
+            response = requests.post(f"{BACKEND_URL}/query", json={"query": query})
             if response.status_code == 200:
                 data = response.json()
                 response_text = data.get("response", "")

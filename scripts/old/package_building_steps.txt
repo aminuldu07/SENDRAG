@@ -69,4 +69,181 @@ SENDRAG/
 ├── Dockerfile            # For containerizing the app
 └── README.md
 
+############################### AWS_specific_settings###############################
+# awscli installing in my mac
+   -------- brew install awscli
+   -------- aws --version  
+   -------- aws configure   
+   -------- aws s3 ls    
+   -------- aws ec2 describe-volumes
+   -------- aws s3 ls --summarize --recursive 
+   -------- aws sts get-caller-identity 
+   -------- 663804041062
+  #####----- How to Create an EC2 Instance from the AWS CLI -----------------------
+    ----- aws ec2 run-instances "COMMAND WITH VARIAOUS PARAMETERS"
+    ---- 
+   1. Find the Latest Ubuntu AMI for Your Region
+   aws ec2 describe-images \
+  --owners 099720109477 \
+  --filters "Name=name,Values=ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*" \
+            "Name=architecture,Values=x86_64" \
+            "Name=root-device-type,Values=ebs" \
+            "Name=virtualization-type,Values=hvm" \
+  --query "Images | sort_by(@, &CreationDate) | [-1].ImageId" \
+  --output text
+
+#$$$$$$$$$$$ output was --- "" ami-0a7d80731ae1b2435  """"
+
+2. Create a Key Pair (if you don't have one yet)
+
+                aws ec2 create-key-pair \
+                    --key-name sendrag-ec2-key \
+                    --query 'KeyMaterial' \
+                    --output text > ~/.ssh/sendrag-ec2-key.pem
+
+
+               chmod 400 ~/.ssh/sendrag-ec2-key.pem
+
+
+3. -------------------Create a Security Group---------------------
+    ✅ 1. Create the security group:
+        aws ec2 create-security-group \
+            --group-name sendrag-sg \
+            --description "Security group for SENDRAG frontend access" \
+            --vpc-id $(aws ec2 describe-vpcs --query "Vpcs[0].VpcId" --output text)
+
+   ✅ 2. Allow SSH (port 22) access:
+       aws ec2 authorize-security-group-ingress \
+          --group-name sendrag-sg \
+          --protocol tcp \
+          --port 22 \
+          --cidr 0.0.0.0/0
+   
+   ✅ 3. Allow Streamlit access (port 8501):
+       aws ec2 authorize-security-group-ingress \
+          --group-name sendrag-sg \
+          --protocol tcp \
+          --port 8501 \
+          --cidr 0.0.0.0/0
+
+#-------------------------------------------------------          
+#------------🚀 5. Launch the EC2 Instance
+#---------------------------------------------------------
+      ✅ Modified EC2 Instance Launch Command:
+        aws ec2 run-instances \
+          --image-id ami-0a7d80731ae1b2435 \
+          --instance-type t2.micro \
+          --key-name sendrag-ec2-key \
+          --security-groups sendrag-sg \
+          --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=Sendrag-Frontend}]' \
+          --count 1
+
+✅ Get Public IP of Your Instance
+# after running the above command, get the instance id and then check the status as 
+
+        ---- aws ec2 describe-instances --instance-ids i-053e9a9503dfd13d5 \
+                --query 'Reservations[*].Instances[*].[State.Name,PublicIpAddress]' --output text
+
+                                    ((( aws ec2 describe-instances \
+                                          --filters "Name=tag:Name,Values=Sendrag-Frontend" \
+                                          --query "Reservations[*].Instances[*].PublicIpAddress" \
+                                          --output text
+                    )))
+
+ -------------- from the above code, get the public IP address 
+
+✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ 
+
+     SSH into your EC2 instance using your key:
+
+        ssh -i ~/.ssh/sendrag-ec2-key.pem ubuntu@18.233.102.148
+        
+        ✅ ✅ ✅ ✅ ✅ ✅ ✅ press yes then 
+
+# ✅ ✅ ✅ ✅# Then , I created setup_ec2_frontend.sh file in my  ✅ ✅SENDRAG/scripts/  ✅ ✅ directory 
+     ✅ ✅ ✅ ✅ Make it executable locally: chmod +x SENDRAG/scripts/setup_ec2_frontend.sh
+
+✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ 
+✅ ✅ ✅ ✅ ✅ ✅ copy the setup_ec2_frontend.sh to ec2 ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ 
+✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ 
+
+🔁 Step 1: Copy Script to EC2
+From your Mac terminal (not inside the SSH session), use scp to copy the script to the instance:
+
+    --- scp -i ~/.ssh/sendrag-ec2-key.pem SENDRAG/scripts/setup_ec2_frontend.sh ubuntu@18.233.102.148:~
+
+▶️ Step 2: Run Script on EC2
+Now switch back to your SSH session, and run the script:
+--------  chmod +x setup_ec2_frontend.sh  # just in case
+--------- ./setup_ec2_frontend.sh
+✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ 
+Perfect — Poetry is installed, but the shell doesn’t know where to find it yet. This is a classic $PATH issue.
+Let’s fix it step-by-step:
+✅ Step 1: Add Poetry to PATH
+ echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+This tells your shell where Poetry lives and reloads the config.
+
+got the SENDRAG directroy and 
+vim ~/SENDRAG/pyproject.toml---- python = ">=3.10,<3.14"
+
+---- poetry env use python3
+
+--- poetry lock 
+
+---- poetry install
+
+--- poetry run streamlit run app.py --server.port 8501 --server.address 0.0.0.0
+
+✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ 
+Follwoing above, i got out of memory, so i had kill the instance by this command 
+
+###----------- Stop (kill) your EC2 instance
+You need the instance ID first. You can find it in the AWS Console, or run:
+ -------    aws ec2 describe-instances --filters "Name=private-dns-name,Values=ip-172-31-90-67.ec2.internal" --query 'Reservations[*].Instances[*].InstanceId' --output text
+ {{{{{ output is ----    i-053e9a9503dfd13d5 }}}}}
+
+aws ec2 terminate-instances --instance-ids i-053e9a9503dfd13d5
+
+
+
+ # check status 
+ aws ec2 describe-instances --instance-ids i-053e9a9503dfd13d5 --query 'Reservations[*].Instances[*].State.Name' --output text
+
+
+
+ output -- stopped 
+✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ 
+✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ 
+Step 3: Find the root EBS volume attached to the instance
+aws ec2 describe-instances --instance-ids i-0abcdef1234567890 --query 'Reservations[*].Instances[*].BlockDeviceMappings[?DeviceName==`/dev/xvda`].Ebs.VolumeId' --output text
+#$$$$$$$ get the instance details ---------------
+aws ec2 describe-instances --instance-ids i-053e9a9503dfd13d5 --query 'Reservations[*].Instances[*].BlockDeviceMappings' --output json
+aws ec2 describe-instances --instance-ids i-053e9a9503dfd13d5 --query 'Reservations[*].Instances[*].State.Name' --output text (check if instance is stopped)
+
+To find the volume ID, run:
+aws ec2 describe-instances --instance-ids i-053e9a9503dfd13d5 --query 'Reservations[*].Instances[*].BlockDeviceMappings' --output json
+
+aws ec2 modify-volume --volume-id vol-0d15c9fc5f52c4595 --size 20
+
+aws ec2 start-instances --instance-ids i-053e9a9503dfd13d5 ( restart the instance)
+
+1..  ssh -i ~/.ssh/sendrag-ec2-key.pem ubuntu@3.87.32.217
+2.. cd SENDRAG
+3..... Poetry install
+
+✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ 
+✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ 
+
+# How to delete leftover resources:
+Delete EBS volumes: aws ec2 describe-volumes --filters Name=attachment.instance-id,Values=i-053e9a9503dfd13d5
+
+aws ec2 describe-snapshots --owner-ids self
+aws ec2 describe-addresses --query 'Addresses[?AssociationId==`null`]'
+aws ec2 describe-volumes --filters Name=status,Values=available
+
+
+
+
+
 

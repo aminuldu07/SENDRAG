@@ -7,10 +7,6 @@ import faiss
 import pickle
 import numpy as np
 
-
-#print(Config.DEBUG)
-#print(Config.OPENAI_API_KEY)
-
 app = FastAPI()
 
 # ---- Load vector store ----
